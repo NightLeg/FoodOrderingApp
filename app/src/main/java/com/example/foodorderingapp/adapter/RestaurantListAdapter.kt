@@ -13,7 +13,7 @@ import com.example.foodorderingapp.RestaurantModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RestaurantListAdapter(val restaurantList: List<RestaurantModel?>?):RecyclerView.Adapter<RestaurantListAdapter.MyViewHolder>(){
+class RestaurantListAdapter(val restaurantList: List<RestaurantModel?>?,val clickListener: RestaurantListClickListener):RecyclerView.Adapter<RestaurantListAdapter.MyViewHolder>(){
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -24,6 +24,9 @@ class RestaurantListAdapter(val restaurantList: List<RestaurantModel?>?):Recycle
 
     override fun onBindViewHolder(holder: RestaurantListAdapter.MyViewHolder, position: Int) {
         holder.bind(restaurantList?.get(position))
+        holder.itemView.setOnClickListener{
+            clickListener.onItemClick(restaurantList?.get(position))
+        }
     }
 
     override fun getItemCount(): Int {
@@ -65,4 +68,8 @@ class RestaurantListAdapter(val restaurantList: List<RestaurantModel?>?):Recycle
 
     }
 
+    interface RestaurantListClickListener
+    {
+        fun onItemClick(restaurantModel: RestaurantModel?)
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.foodorderingapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
@@ -9,7 +10,7 @@ import com.example.foodorderingapp.adapter.RestaurantListAdapter
 import com.google.gson.Gson
 import java.io.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() ,RestaurantListAdapter.RestaurantListClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     {
         val recyclerViewRestaurant=findViewById<RecyclerView>(R.id.recyclerViewRestaurantList)
         recyclerViewRestaurant.layoutManager=LinearLayoutManager(this)
-        val adapter=RestaurantListAdapter(restaurantList)
+        val adapter=RestaurantListAdapter(restaurantList,this)
         recyclerViewRestaurant.adapter=adapter
     }
 
@@ -48,6 +49,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onItemClick(restaurantModel: RestaurantModel?) {
+        val intent = Intent(this@MainActivity,RestaurantMenuActivity::class.java)
+        intent.putExtra("RestaurantModel",restaurantModel)
+        startActivity(intent)
+
+    }
 
 
 }
