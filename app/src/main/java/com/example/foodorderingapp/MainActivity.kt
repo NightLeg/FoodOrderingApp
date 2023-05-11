@@ -11,6 +11,8 @@ import com.google.gson.Gson
 import java.io.*
 
 class MainActivity : AppCompatActivity() ,RestaurantListAdapter.RestaurantListClickListener{
+
+    lateinit var restaurantName:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -52,6 +54,7 @@ class MainActivity : AppCompatActivity() ,RestaurantListAdapter.RestaurantListCl
     override fun onItemClick(restaurantModel: RestaurantModel?) {
         val intent = Intent(this@MainActivity,RestaurantMenuActivity::class.java)
         intent.putExtra("RestaurantModel",restaurantModel)
+        namePass.restaurantName= restaurantModel?.name.toString()
         startActivity(intent)
 
     }

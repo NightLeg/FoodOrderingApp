@@ -1,20 +1,40 @@
 package com.example.foodorderingapp
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodorderingapp.adapter.OrderPlacementAdapter
+import com.example.foodorderingapp.adapter.UserData
 import com.example.foodorderingapp.databinding.ActivityOrderPlacementBinding
-import com.example.foodorderingapp.databinding.ActivityRestaurantMenuBinding
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
+
 
 class OrderPlacement : AppCompatActivity() {
+
     var orderPlacement: OrderPlacementAdapter?=null
     var isDeliveryOn:Boolean=false
+    var addrress:String="null"
+    var restaurantName:String?="null"
+    var food:List<Menus?>?=null
+
+
+    private lateinit var database:DatabaseReference
+    lateinit var userData:UserData
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +49,30 @@ class OrderPlacement : AppCompatActivity() {
 
         binding.buttonPlaceYourOrder.setOnClickListener {
             onPlaceOrderButtonClick(restaurantModel,binding)
+            addrress=String.format("%s,%s,%s,%s",binding.inputAddress.text.toString(),binding.inputCity.text.toString(),binding.inputState.text.toString(),binding.inputZip.text.toString())
+
+            restaurantName=restaurantModel?.name
+            food=restaurantModel?.menus
+
+
+
+
+
+            database=FirebaseDatabase.getInstance().getReference(restaurantName!!)
+            var id=database.push().key.toString()
+            userData= UserData(id,restaurantName,addrress,food)
+            database.child(userData.id!!).setValue(userData)
+
+
+
+
+
+
+
+
 
         }
+
 
         binding.switchDelivery?.setOnCheckedChangeListener { buttonView, isChecked ->
 
@@ -63,6 +105,8 @@ class OrderPlacement : AppCompatActivity() {
         calculateTotal(restaurantModel,binding)
 
     }
+
+
 
 
     private fun calculateTotal(restaurantModel:RestaurantModel?,binding: ActivityOrderPlacementBinding)
